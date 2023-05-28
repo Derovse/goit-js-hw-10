@@ -1,7 +1,4 @@
-// index.js
-
-const apiKey =
-  'live_baZrekgEpNy6tgg2vdu3h8ZWkVqkBhDuqVaKiFp1bQTn3ClExudsA3Sbooq0idMk';
+import { fetchBreeds, fetchCatByBreed } from './cat-api.js';
 
 const breedSelect = document.querySelector('.breed-select');
 const loader = document.querySelector('.loader');
@@ -42,49 +39,15 @@ function displayCatInfo(cat) {
   const temperament =
     cat.breeds.length > 0 ? cat.breeds[0].temperament : 'Unknown';
 
-  const image = document.createElement('img');
-  image.src = cat.url;
+  const image = `<img src="${cat.url}" alt="${breedName}">`;
 
-  const breedTitle = document.createElement('h2');
-  breedTitle.textContent = breedName;
+  const breedTitle = `<h2>${breedName}</h2>`;
+  const descriptionParagraph = `<p>Description: ${description}</p>`;
+  const temperamentParagraph = `<p>Temperament: ${temperament}</p>`;
 
-  const descriptionParagraph = document.createElement('p');
-  descriptionParagraph.textContent = `Description: ${description}`;
+  const catInfoHTML = `${image}${breedTitle}${descriptionParagraph}${temperamentParagraph}`;
 
-  const temperamentParagraph = document.createElement('p');
-  temperamentParagraph.textContent = `Temperament: ${temperament}`;
-
-  catInfo.innerHTML = '';
-  catInfo.appendChild(image);
-  catInfo.appendChild(breedTitle);
-  catInfo.appendChild(descriptionParagraph);
-  catInfo.appendChild(temperamentParagraph);
-}
-
-function fetchCatByBreed(breedId) {
-  const url = `https://api.thecatapi.com/v1/images/search?breed_ids=${breedId}&limit=1`;
-  return fetch(url, {
-    headers: {
-      'x-api-key': apiKey,
-    },
-  })
-    .then(response => {
-      if (!response.ok) {
-        throw new Error('Failed to fetch cat by breed.');
-      }
-      return response.json();
-    })
-    .then(data => {
-      const cat = data[0];
-      if (!cat) {
-        throw new Error('Cat not found.');
-      }
-      return cat;
-    })
-    .catch(error => {
-      console.error(error);
-      throw error;
-    });
+  catInfo.innerHTML = catInfoHTML;
 }
 
 function onBreedSelectChange() {
@@ -103,22 +66,6 @@ function onBreedSelectChange() {
       showError();
       hideLoader();
       console.error(error);
-    });
-}
-
-function fetchBreeds() {
-  const url = 'https://api.thecatapi.com/v1/breeds';
-
-  return fetch(url)
-    .then(response => {
-      if (!response.ok) {
-        throw new Error('Failed to fetch cat breeds.');
-      }
-      return response.json();
-    })
-    .catch(error => {
-      console.error(error);
-      throw error;
     });
 }
 
